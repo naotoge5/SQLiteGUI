@@ -24,12 +24,13 @@ function showDatabase(response) {
 
 function showTable(response) {
     let tables = JSON.parse(response);
+    $('.table .show').empty();
     if (tables.length != 0) {
         for (let i = 0; i < tables.length; i++) {
             $('.table .show').append('<tr><td><input type="button" name="select" value="削除"></td><td><label for="' + tables[i]['name'] + '">' + tables[i]['name'] + '</label></td></tr>');
         }
     } else {
-        $('.database .show').append('<tr><th>データベースファイル（.db）が見つかりません</th></tr>');
+        $('.table .show').append('<tr><th>テーブルは存在しません</th></tr>');
     }
 }
 
