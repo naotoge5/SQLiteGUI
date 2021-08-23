@@ -1,15 +1,17 @@
 <main>
-    <h3>データベースの選択</h3>
-    <p id="path"></p>
-    <ul id="list">
-    </ul>
-    <input type="text" name="new">.db
-    <button>作成</button>
-    <hr>
-    <h3>選択済みのデータベース</h3>
-    <form action="controller/login.php" method="post">
-        <p id="db"></p>
-        <input type="hidden" name="name">
-        <button type="submit">接続する</button>
-    </form>
+    <div class="Box m-6">
+        <div class="Box-header">
+            <h3 id="path" class="Box-title"></h3>
+        </div>
+        <ul id="list">
+        </ul>
+        <div class="Box-footer">
+            .../<span id="current"></span>/
+            <input type="text" name="new" class="form-control" placeholder="new">
+            <label class="mx-3"> <input type="radio" name="DBorDIR" checked /> DATABASE </label>
+            or
+            <label class="mx-3"> <input type="radio" name="DBorDIR" /> DIRECTORY </label>
+            <button class="btn" type="submit">Create</button>
+        </div>
+    </div>
 </main>

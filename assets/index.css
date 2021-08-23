@@ -1,0 +1,6 @@
+#list li.__hover:hover {
+    background-color: rgb(246, 248, 250);
+}
+.__hover {
+    cursor: pointer;
+}

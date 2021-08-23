@@ -10,14 +10,23 @@ function init() {
     });
 }
 var paths = [];
-$(document).on("click", "#list u", function (e) {
-    var path = $("#path").text() + '/' + $(e.target).text();
-    console.log(path);
-    var deferred = Folder.data(path);
-    deferred.done(function (data) {
-        set(data);
-    });
-}).on("click", "#path u", function (e) {
+$(document).on("click", "#list li.__hover", function (e) {
+    if ($(e.target).hasClass("DB")) {
+        var name = $(e.target).data("name");
+        var flag = confirm('Connect to "' + name + '"?');
+        if (flag) {
+            var path = $("#path").text() + '/' + $(e.target).text();
+            location.href = "controller/login.php?name=" + encodeURIComponent(path);
+        }
+    } else {
+        var path = $("#path").text() + '/' + $(e.target).text();
+        console.log(path);
+        var deferred = Folder.data(path);
+        deferred.done(function (data) {
+            set(data);
+        });
+    }
+}).on("click", "#path u.__hover", function (e) {
     var dir = $(e.target).text();
     var path = '';
     for (let index = 0; index < paths.length; index++) {
@@ -28,11 +37,6 @@ $(document).on("click", "#list u", function (e) {
     deferred.done(function (data) {
         set(data);
     });
-}).on("change", "input[type='radio']", function (e) {
-    var val = $(e.target).val()
-    $("#db").text(val);
-    var path = $("#path").text() + '/' + val;
-    $("input[name='name']").val(path);
 });
 
 
@@ -44,17 +48,19 @@ function set(data) {
     paths.forEach(emp => {
         if (emp == end) {
             $("#path").append("/" + emp);
+            $("#current").text(emp);
         } else {
-            $("#path").append("/<u>" + emp + "</u>");
+            $("#path").append("/<u class='__hover'>" + emp + "</u>");
         }
     });
     data.list.forEach(emp => {
         if (emp.slice(-3) == '.db') {
-            $("#list").append('<li><input type="radio" name="database" id="' + emp + '" value="' + emp + '"> <label for="' + emp + '">' + emp + '</label></li >');
+            var name = emp.replace('.db', '')
+            $("#list").append('<li class="Box-row __hover DB" data-name="' + name + '">' + emp + '</li>');
         } else if (emp.indexOf('.') != -1) {
-            $("#list").append("<li>" + emp + "</li>");
+            $("#list").append('<li class="Box-row">' + emp + '</li>');
         } else {
-            $("#list").append("<li><u>" + emp + "</u></li>");
+            $("#list").append('<li class="Box-row __hover">' + emp + '</u></li>');
         }
     });
 }

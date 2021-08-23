@@ -10,26 +10,24 @@ require_once("controller/route.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQLiteGUI - <?= $route ?></title>
     <link rel="stylesheet" href="assets/primer.css">
+    <link rel="stylesheet" href="assets/index.css">
     <script src="assets/js/jquery-3.6.0.js"></script>
     <script src="assets/js/script.js" type="module" defer></script>
 </head>
 
 <body>
-    <header class="position-fixed top-0 width-full">
-        <div class="Header">
+    <header>
+        <div class="Header px-6">
             <div class="Header-item">
-                <a href="#" class="Header-link f4 d-flex flex-items-center">
-                    <span>SQLiteGUI</span>
-                </a>
+                <h1>SQLiteGUI</h1>
             </div>
-            <div class="Header-item">
-                <input type="search" class="form-control Header-input" />
+            <div class="Header-item Header-item--full mr-0">
             </div>
-            <div class="Header-item Header-item--full">
-            </div>
-            <div class="Header-item mr-0">
-                <img class="avatar" height="20" alt="@octocat" src="https://github.com/octocat.png" width="20">
-            </div>
+            <?php if ($route != 'login') : ?>
+                <div class="Header-item mr-0">
+                    <a href="controller/logout.php" class="Header-link">Logout</a>
+                </div>
+            <?php endif; ?>
         </div>
     </header>
     <?php

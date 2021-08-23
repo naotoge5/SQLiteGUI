@@ -1,5 +1,5 @@
 <?php
 require_once('autoload.php');
 
-$_SESSION['db'] = DB::bag($_GET['name']);
+unset($_SESSION['db']);
 header('Location: ../index.php?route=home');
