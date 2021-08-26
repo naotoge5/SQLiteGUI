@@ -1,6 +1,68 @@
 #list li.__hover:hover {
-    background-color: rgb(246, 248, 250);
+    background-color: var(--color-btn-hover-bg);
 }
+
 .__hover {
     cursor: pointer;
+}
+
+#tables {
+    overflow-y: scroll;
+    /* IE, Edge 対応 */
+    -ms-overflow-style: none;
+    /* Firefox 対応 */
+    scrollbar-width: none;
+}
+
+#tables::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    margin: 0;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.px-md {
+    padding: 0 72px 0 72px;
+}
+
+.px-lg {
+    padding: 0 144px 0 144px;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #f8f5f0;
+}
+
+.modal {
+    display: none;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.modal-bg {
+    background: var(--color-bg-backdrop);
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
+
+.modal-content {
+    z-index: 999;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 1012px;
 }

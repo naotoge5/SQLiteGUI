@@ -16,7 +16,7 @@ $(document).on("click", "#list li.__hover", function (e) {
         var flag = confirm('Connect to "' + name + '"?');
         if (flag) {
             var path = $("#path").text() + '/' + $(e.target).text();
-            location.href = "controller/login.php?name=" + encodeURIComponent(path);
+            location.href = "controller/_login.php?path=" + encodeURIComponent(path);
         }
     } else {
         var path = $("#path").text() + '/' + $(e.target).text();
@@ -64,6 +64,8 @@ function set(data) {
         }
     });
 }
+
+
 /*
 $("button").click(function (e) {
     var name = $("input[name='name']").val();

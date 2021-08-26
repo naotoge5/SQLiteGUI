@@ -1,5 +1,5 @@
-<main>
-    <div class="Box m-6">
+<main class="m-6">
+    <div class="Box">
         <div class="Box-header">
             <h3 id="path" class="Box-title"></h3>
         </div>
