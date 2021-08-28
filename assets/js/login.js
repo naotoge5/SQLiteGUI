@@ -5,7 +5,6 @@ init();
 function init() {
     var deferred = Folder.data();
     deferred.done(function (data) {
-        console.log(data);
         set(data);
     });
 }
@@ -20,7 +19,6 @@ $(document).on("click", "#list li.__hover", function (e) {
         }
     } else {
         var path = $("#path").text() + '/' + $(e.target).text();
-        console.log(path);
         var deferred = Folder.data(path);
         deferred.done(function (data) {
             set(data);

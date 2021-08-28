@@ -10,3 +10,8 @@ function Folder_data($path)
     $path = empty($path) ? null : $path;
     return json_encode(Folder::data($path));
 }
+
+function Column_list_name($name)
+{
+    return json_encode(Column::list($name, 'name'));
+}
