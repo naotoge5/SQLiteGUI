@@ -17,11 +17,12 @@ if (isset($_GET['table'])) {
         echo $column->getName() . ":" . $column->getType() . "<br>----------------<br>";
         foreach ($column->getConstraints() as $key => $value) {
             switch ($key) {
-                case 'default':
-                    if ($value) echo $value . "<br>";
-                    break;
                 case 'foreign_key':
                     if ($value) echo $value["table"] . "(" . $value["column"] . ")<br>";
+                    break;
+                case 'default':
+                case 'check':
+                    if ($value) echo $value . "<br>";
                     break;
 
                 default:

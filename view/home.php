@@ -26,7 +26,7 @@ require_once("controller/home.php");
     <h1 class="h1 my-4"><?= $hash["title"] ?></h1>
     <div class="form-group">
         <div class="form-group-header">
-            <label for="table-name">Name</label>
+            <label>Name</label>
         </div>
         <div class="form-group-body">
             <input class="form-control" type="text" name="table-name" placeholder="name" value="<?= $hash["name"] ?>" />
@@ -39,7 +39,7 @@ require_once("controller/home.php");
         <div class="form-group-body">
             <ol class="ml-4">
                 <?php foreach ($columns as $tmp) : ?>
-                    <li class="__hover py-1" data-type="<?= $tmp->getType() ?>" data-constraint="<?php print_r($tmp->getConstraints()) ?>"><?= $tmp->getName() ?></li>
+                    <li class="__hover py-1" data-type="<?= $tmp->getType() ?>" data-constraints="<?= toRow($tmp->getConstraints()) ?>"><?= $tmp->getName() ?></li>
                 <?php endforeach; ?>
             </ol>
         </div>
@@ -130,13 +130,13 @@ require_once("controller/home.php");
                             <div class="form-group-body">
                                 <div class="d-flex">
                                     <div class="form-checkbox flex-1">
-                                        <label><input type="radio" name="column-unique" value="primary" />PRIMARY KEY</label>
+                                        <label><input type="radio" name="column-unique" value="primary key" />PRIMARY KEY</label>
                                     </div>
                                     <div class="form-checkbox flex-1">
                                         <label><input type="radio" name="column-unique" value="unique" />UNIQUE</label>
                                     </div>
                                     <div class="form-checkbox flex-1">
-                                        <label><input type="checkbox" name="column-not_null" />NOT NULL</label>
+                                        <label><input type="checkbox" name="column-not_null" value="not null" />NOT NULL</label>
                                     </div>
                                 </div>
                                 <div class="d-flex flex-wrap">

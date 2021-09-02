@@ -9,10 +9,16 @@ $(function () {
         return false;
     });
     $("#Create").on('click', function () {
-
+        //var nameTable = $("input[name='table-name']").val();
+        var nameColumn = $("input[name='column-name']").val();
+        var typeColumn = $("select[name='column-type']").val();
+        var uniqueColumn = ' ' + $("input[name='column-unique']:checked").val();
+        var not_nullColumn = ' ' + $("input[name='column-not_null']:checked").val();
+        var rowQuery = nameColumn + ' ' + typeColumn + uniqueColumn + not_nullColumn;
+        console.log(rowQuery);
     });
     var checked = false;
-    $("input[name='uniques']").click(function () {
+    $("input[name='column-unique']").click(function () {
         if ($(this).val() == checked) {
             $(this).prop('checked', false);
             checked = false;
