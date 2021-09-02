@@ -66,3 +66,7 @@ body {
     width: 90%;
     max-width: 1012px;
 }
+
+summary {
+    outline: none;
+}

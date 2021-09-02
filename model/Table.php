@@ -5,6 +5,7 @@ class Table
     private string $name;
     private string $schema;
     private $columns;
+    private $constraints;
 
     function __construct($name)
     {
@@ -21,8 +22,8 @@ class Table
         try {
             $db = new SQLite3($path);
             $db->enableExceptions(true);
-            $result = $db->querySingle("SELECT * FROM sqlite_master WHERE type='table' AND name = '" . $this->name . "'", true);
-            $this->schema = $result['sql'];
+            $row = $db->querySingle("SELECT sql FROM sqlite_master WHERE type='table' AND name = '" . $this->name . "'");
+            $this->schema = $row;
         } catch (Exception $e) {
             //$flag = Config::errorType($e);
             echo $e;
@@ -35,8 +36,7 @@ class Table
     {
         $columns = Column::list($this->name);
         foreach ($columns as $tmp) {
-            $constraints = ['NOT NULL' => $tmp['notnull'], 'PRIMARY KEY' => $tmp['pk'], 'DEFAULT' => $tmp['dflt_value']];
-            $this->columns[] = new Column($this->schema, $tmp['name'], $tmp['type'], $constraints);
+            $this->columns[] = new Column($this, $tmp);
         }
     }
 
@@ -78,5 +78,20 @@ class Table
             $db->close();
         }
         return $tables;
+    }
+
+    static function drop($name)
+    {
+        $db = unserialize($_SESSION['db']);
+        $path = $db->getPath();
+        try {
+            $db = new SQLite3($path);
+            $db->enableExceptions(true);
+            $db->exec("DROP TABLE " . $name);
+        } catch (Exception $e) {
+            //$flag = Config::errorType($e);
+        } finally {
+            $db->close();
+        }
     }
 }

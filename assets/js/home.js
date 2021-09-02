@@ -20,16 +20,29 @@ $(function () {
             checked = $(this).val();
         }
     });
+    $("#Delete").submit(function (e) {
 
-    $("select[name='foreign-table']").change(function (e) {
+        var val = $("input[name='table-name']").val();
+
+        var flag = confirm('DROP TABLE ' + val + '?');
+
+        if (!flag) return false;
+
+    });
+
+    $("select[name='foreign_key-table']").change(function (e) {
         var table = $(this).val();
+        setForeign_keyColumn(table);
+    });
+
+    function setForeign_keyColumn(table) {
         var deferred = DB.columns(table);
         deferred.done(function (data) {
-            $("select[name='foreign-column']").empty();
-            $("select[name='foreign-column']").append("<option selected disabled>Column</option>");
+            $("select[name='foreign_key-column']").empty();
+            $("select[name='foreign_key-column']").append("<option selected disabled>Column</option>");
             data.forEach(tmp => {
-                $("select[name='foreign-column']").append("<option>" + tmp + "</option>");
+                $("select[name='foreign_key-column']").append("<option>" + tmp + "</option>");
             });
         });
-    });
+    }
 });

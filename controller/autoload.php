@@ -6,3 +6,7 @@ function classLoad($class)
 {
     require_once __DIR__ . "/../model/" . $class . ".php";
 }
+
+function toRow() {
+    
+}
