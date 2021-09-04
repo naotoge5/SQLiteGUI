@@ -1,3 +1,56 @@
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+const Table = {
+    name: "input[name='table-name']",
+    columns: "#Columns li"
+}
+
+const Column = {
+    name: "input[name='column-name']",
+    type: {
+        get: "select[name='column-type']",
+        set: function (value) {
+            return "select[name='column-type'] option[value='" + value + "']"
+        }
+    },
+    unique: "input[name='column-unique']:checked",
+    not_null: "input[name='column-not_null']:checked",
+    default: {
+        flag: "input[name='column-default']:checked",
+        value: "input[name='default-value']"
+    },
+    check: {
+        flag: "input[name='column-check']:checked",
+        value: "input[name='check-value']"
+    },
+    foreign_key: {
+        flag: "input[name='column-foreign_key']:checked",
+        table: "select[name='foreign_key-table']",
+        column: "select[name='foreign_key-column']"
+    }
+}
+
+
+
+
+
+
+
+
 import { DB } from './module.js';
 $(function () {
     $("#Add").click(function () {
@@ -10,10 +63,10 @@ $(function () {
     });
     $("#Create").on('click', function () {
         //var nameTable = $("input[name='table-name']").val();
-        var nameColumn = $("input[name='column-name']").val();
-        var typeColumn = $("select[name='column-type']").val();
-        var uniqueColumn = ' ' + $("input[name='column-unique']:checked").val();
-        var not_nullColumn = ' ' + $("input[name='column-not_null']:checked").val();
+        var nameColumn = $(Column.name).val();
+        var typeColumn = $(Column.type).val();
+        var uniqueColumn = ' ' + $(Column.unique).val();
+        var not_nullColumn = ' ' + $(Column.not_null).val();
         var rowQuery = nameColumn + ' ' + typeColumn + uniqueColumn + not_nullColumn;
         console.log(rowQuery);
     });
@@ -51,4 +104,9 @@ $(function () {
             });
         });
     }
+
+    $(Table.columns).click(function (e) {
+        $(Column.name).val($(e.target).text());
+        $(Column.type.set($(e.target).data("type"))).prop('selected', true);
+    });
 });

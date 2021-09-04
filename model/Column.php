@@ -54,8 +54,7 @@ class Column
             }
             $this->constraints['foreign_key'] = $this->hasForeignKey($schema_row);
             if ($this->constraints['foreign_key']) {
-                $row = $db->querySingle("SELECT [table], [to] FROM pragma_foreign_key_list('" . $this->parent->getName() . "') WHERE [from] = '" . $this->name . "'");
-                $this->constraints['foreign_key'] = ["table" => $row['table'], "column" => $row['to']];
+                $this->constraints['foreign_key'] = self::getForeignKeyConditions($this->parent->getName(), $this->name);
             }
         } catch (Exception $e) {
             echo $e;
@@ -164,6 +163,35 @@ class Column
         }
         $row = substr($row, 1, $end - 1);
         return $row;
+    }
+
+    /**
+     * foreignkeyの取得
+     *
+     * @return boolean
+     */
+    static function getForeignKeyConditions($table, $column = null)
+    {
+        $db = unserialize($_SESSION['db']);
+        $path = $db->getPath();
+        try {
+            $db = new SQLite3($path);
+            $db->enableExceptions(true);
+            if (is_null($column)) {
+                $rows = [];
+                $result = $db->query("SELECT [table], [to] FROM pragma_foreign_key_list('" . $table . "')");
+                while ($tmp = $result->fetchArray(SQLITE3_ASSOC)) {
+                    $rows[] = ["table" => $tmp['table'], "column" => $tmp['to']];
+                }
+            } else {
+                $row = $db->querySingle("SELECT [table], [to] FROM pragma_foreign_key_list('" . $table . "') WHERE [from] = '" . $column . "'", true);
+                return ["table" => $row['table'], "column" => $row['to']];
+            }
+        } catch (Exception $e) {
+            echo $e;
+        } finally {
+            $db->close();
+        }
     }
 
     /**

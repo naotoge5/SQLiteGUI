@@ -37,9 +37,16 @@ require_once("controller/home.php");
             <label for="table-name">Columns</label>
         </div>
         <div class="form-group-body">
-            <ol class="ml-4">
+            <ol id="Columns" class="ml-4 d-inline-block width-fit">
                 <?php foreach ($columns as $tmp) : ?>
-                    <li class="__hover py-1" data-type="<?= $tmp->getType() ?>" data-constraints="<?= toRow($tmp->getConstraints()) ?>"><?= $tmp->getName() ?></li>
+                    <?php
+                    $constraints = $tmp->getConstraints();
+                    $foreign_key = false;
+                    if ($constraints["foreign_key"]) {
+                        $foreign_key = $constraints["foreign_key"]["table"] . ":" . $constraints["foreign_key"]["column"];
+                    }
+                    ?>
+                    <li class="__hover py-1" data-type="<?= h($tmp->getType()) ?>" data-primary_key="<?= h($constraints["primary_key"]) ?>" data-not_null="<?= h($constraints["not_null"]) ?>" data-unique="<?= h($constraints["unique"]) ?>" data-default="<?= h($constraints["default"]) ?>" data-check="<?= h($constraints["check"]) ?>" data-foreign_key="<?= h($foreign_key) ?>"><?= $tmp->getName() ?></li>
                 <?php endforeach; ?>
             </ol>
         </div>
@@ -54,10 +61,10 @@ require_once("controller/home.php");
     </small>
     <div class="form-group">
         <div class="form-group-header">
-            <label for="table-name">Constraints</label>
+            <label>Constraints</label>
         </div>
         <div class="form-group-body">
-            <ol class="ml-4">
+            <ol id="Constraints" class="ml-4 d-inline-block width-fit">
 
                 <li class="__hover py-1">sa</li>
 
@@ -108,16 +115,16 @@ require_once("controller/home.php");
                                 <input class="form-control input-sm mr-2 mb-1" type="text" name="column-name" placeholder="name" />
                                 <select class="form-select select-sm mr-2 mb-1" name="column-type">
                                     <option selected disabled>Data Type</option>
-                                    <option>TEXT</option>
-                                    <option>INTEGER</option>
-                                    <option>FLOAT</option>
-                                    <option>REAL</option>
-                                    <option>BLOB</option>
-                                    <option>NUMERIC</option>
-                                    <option>DATE</option>
-                                    <option>TIME</option>
-                                    <option>DATETIME</option>
-                                    <option>BOOLEAN</option>
+                                    <option value="text">TEXT</option>
+                                    <option value="integer">INTEGER</option>
+                                    <option value="float">FLOAT</option>
+                                    <option value="real">REAL</option>
+                                    <option value="blob">BLOB</option>
+                                    <option value="numeric">NUMERIC</option>
+                                    <option value="date">DATE</option>
+                                    <option value="time">TIME</option>
+                                    <option valu="datetime">DATETIME</option>
+                                    <option value="boolean">BOOLEAN</option>
                                 </select>
                             </div>
                         </div>
@@ -161,7 +168,7 @@ require_once("controller/home.php");
                                             <input type="checkbox" class="form-checkbox-details-trigger" name="chack" />
                                             CHECK
                                             <span class="form-checkbox-details text-normal">
-                                                <input type="text" name="check" class="form-control input-sm width-auto" />
+                                                <input type="text" name="check-value" class="form-control input-sm width-auto" />
                                             </span>
                                         </label>
                                     </div>
