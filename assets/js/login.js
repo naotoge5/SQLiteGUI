@@ -9,7 +9,7 @@ function init() {
     });
 }
 var paths = [];
-$(document).on("click", "#list li.__hover", function (e) {
+$(document).on("click", "#list li.__hover-pointer", function (e) {
     if ($(e.target).hasClass("DB")) {
         var name = $(e.target).data("name");
         var flag = confirm('Connect to "' + name + '"?');
@@ -24,7 +24,7 @@ $(document).on("click", "#list li.__hover", function (e) {
             set(data);
         });
     }
-}).on("click", "#path u.__hover", function (e) {
+}).on("click", "#path u.__hover-pointer", function (e) {
     var dir = $(e.target).text();
     var path = '';
     for (let index = 0; index < paths.length; index++) {
@@ -48,17 +48,17 @@ function set(data) {
             $("#path").append("/" + emp);
             $("#current").text(emp);
         } else {
-            $("#path").append("/<u class='__hover'>" + emp + "</u>");
+            $("#path").append("/<u class='__hover-pointer'>" + emp + "</u>");
         }
     });
     data.list.forEach(emp => {
         if (emp.slice(-3) == '.db') {
             var name = emp.replace('.db', '')
-            $("#list").append('<li class="Box-row __hover DB" data-name="' + name + '">' + emp + '</li>');
+            $("#list").append('<li class="Box-row __hover-pointer DB" data-name="' + name + '">' + emp + '</li>');
         } else if (emp.indexOf('.') != -1) {
             $("#list").append('<li class="Box-row">' + emp + '</li>');
         } else {
-            $("#list").append('<li class="Box-row __hover">' + emp + '</u></li>');
+            $("#list").append('<li class="Box-row __hover-pointer">' + emp + '</u></li>');
         }
     });
 }

@@ -146,8 +146,7 @@ class Column
                 if ($tmp[$last] === "(") {
                     switch ($val) {
                         case ")":
-                            $end = $key;
-                            $flag = true;
+                            unset($tmp[$last]);
                             break;
                         case "(":
                         case "'":
@@ -157,6 +156,10 @@ class Column
                     }
                 } elseif ($tmp[$last] === $val) {
                     unset($tmp[$last]);
+                }
+                if (empty($tmp)) {
+                    $end = $key;
+                    $flag = true;
                 }
             }
             if ($flag) break;

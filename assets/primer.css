@@ -16592,6 +16592,10 @@ a.tabnav-extra:hover {
     visibility: visible !important
 }
 
+.hide {
+    display: none !important
+}
+
 @media (max-width: 543px) {
     .hide-sm {
         display: none !important

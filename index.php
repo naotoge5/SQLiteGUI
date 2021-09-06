@@ -23,7 +23,7 @@ $js = 'assets/js/' . $route . '.js';
 
 <body>
     <header>
-        <div class="Header px-6">
+        <div class="Header px-6 __px-md-ex">
             <div class="Header-item">
                 <h1>
                     <?= $title ?>
