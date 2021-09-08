@@ -43,22 +43,22 @@ function set(data) {
     $("#path, #list").empty();
     paths = data.paths;
     var end = paths[paths.length - 1];
-    paths.forEach(emp => {
-        if (emp == end) {
-            $("#path").append("/" + emp);
-            $("#current").text(emp);
+    paths.forEach(tmp => {
+        if (tmp == end) {
+            $("#path").append("/" + tmp);
+            $("#current").text(tmp);
         } else {
-            $("#path").append("/<u class='__hover-pointer'>" + emp + "</u>");
+            $("#path").append("/<u class='__hover-pointer'>" + tmp + "</u>");
         }
     });
-    data.list.forEach(emp => {
-        if (emp.slice(-3) == '.db') {
-            var name = emp.replace('.db', '')
-            $("#list").append('<li class="Box-row __hover-pointer DB" data-name="' + name + '">' + emp + '</li>');
-        } else if (emp.indexOf('.') != -1) {
-            $("#list").append('<li class="Box-row">' + emp + '</li>');
+    data.list.forEach(tmp => {
+        if (tmp.slice(-3) == '.db') {
+            var name = tmp.replace('.db', '')
+            $("#list").append('<li class="Box-row __hover-pointer __hover-bg DB" data-name="' + name + '">' + tmp + '</li>');
+        } else if (tmp.indexOf('.') != -1) {
+            $("#list").append('<li class="Box-row">' + tmp + '</li>');
         } else {
-            $("#list").append('<li class="Box-row __hover-pointer">' + emp + '</u></li>');
+            $("#list").append('<li class="Box-row __hover-pointer __hover-bg">' + tmp + '</u></li>');
         }
     });
 }

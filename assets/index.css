@@ -61,6 +61,10 @@ table {
     min-width: 768px;
 }
 
+.btn {
+    position: unset;
+}
+
 @media (min-width: 768px) {
     .__px-md-ex {
         padding-left: 144px !important;

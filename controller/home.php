@@ -1,7 +1,7 @@
 <?php
 require_once('autoload.php');
 
-$hash = ["title" => 'Create Table', "name" => '', "schema" => ''];
+$hash = ["title" => 'Create Table', "name" => '', "schema" => '', "flag" => false];
 
 $tables = Table::list();
 
@@ -12,5 +12,6 @@ if (isset($_GET['table'])) {
     $hash["title"] = 'Show Table';
     $hash["name"] = $table->getName();
     $hash["schema"] = $table->getSchema();
+    $hash["flag"] = true;
     $columns = $table->getColumns();
 }
