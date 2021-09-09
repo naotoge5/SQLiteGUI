@@ -1,4 +1,4 @@
-<main class="m-6">
+<main class="m-6 __mx-md-ex">
     <div class="Box">
         <div class="Box-header">
             <h3 id="path" class="Box-title"></h3>

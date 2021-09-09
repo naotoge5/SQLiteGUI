@@ -20,10 +20,9 @@ class Column
 
     protected function setType()
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $db = DB::cast(unserialize($_SESSION['db']));
         try {
-            $db = new SQLite3($path);
+            $db = $db->getDB();
             $db->enableExceptions(true);
             $row = $db->querySingle("SELECT type FROM pragma_table_info('" . $this->parent->getName() . "') WHERE name = '" . $this->name . "'");
             $this->type = $row;
@@ -36,10 +35,9 @@ class Column
 
     protected function setConstraints()
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $DB = DB::cast(unserialize($_SESSION['db']));
         try {
-            $db = new SQLite3($path);
+            $db = $DB->getDB();
             $db->enableExceptions(true);
             $row = $db->querySingle("SELECT [notnull], [dflt_value] FROM pragma_table_info('" . $this->parent->getName() . "') WHERE name = '" . $this->name . "'", true);
             $schema_row = $this->toRow();
@@ -82,7 +80,21 @@ class Column
      */
     protected function hasUnique(string $row): bool
     {
-        return (strpos($row, 'unique') || strpos($row, 'UNIQE')) ? true : false;
+        $flag = false;
+        $start_end = startToEnd($row);
+        $start = $start_end["start"];
+        $end = $start_end["end"];
+        if (empty($start)) {
+            if ((strpos($row, 'unique') !== false) || (strpos($row, 'UNIQUE') !== false)) $flag = true;
+        } else {
+            foreach ($start as $key => $value) {
+                $tmp = substr($row, $value, $end[$key]);
+                $tmp = str_replace($tmp, '', $row);
+                echo '|' . $tmp . '|';
+                if ((strpos($tmp, 'unique') !== false) || (strpos($tmp, 'UNIQUE') !== false)) $flag = true;
+            }
+        }
+        return $flag;
     }
 
     /**
@@ -127,10 +139,12 @@ class Column
     protected function getCheckConditions(string $row): string
     {
         $row = strstr($row, 'check');
+        echo $row;
         $row = strstr($row, '(');
         $end = mb_strlen($row);
         $array = str_split($row);
         $tmp = [];
+        $start = 0;
         $flag = false;
         foreach ($array as $key => $val) {
             if (empty($tmp)) {
@@ -138,6 +152,7 @@ class Column
                     case "(":
                     case "'":
                     case '"':
+                        $start = $key;
                         $tmp[] = $val;
                         break;
                 }
@@ -175,11 +190,9 @@ class Column
      */
     static function getForeignKeyConditions($table, $column = null)
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $DB = DB::cast(unserialize($_SESSION['db']));
         try {
-            $db = new SQLite3($path);
-            $db->enableExceptions(true);
+            $db = $DB->getDB();
             if (is_null($column)) {
                 $rows = [];
                 $result = $db->query("SELECT [table], [to] FROM pragma_foreign_key_list('" . $table . "')");
@@ -205,22 +218,22 @@ class Column
     protected function toRow(): string
     {
         $schema = $this->parent->getSchema();
-        $tmp = strstr($schema, '(');
-        $schema = substr($tmp, 1, -1);
-        $tmp = strstr($schema, $this->name . ' ' . $this->type);
-        $end = $this->rowEnd($tmp);
-        $row = substr($tmp, 0, $end);
+        $tmp = strstr($schema, '('); //CREATE TABLE <テーブル名>までを除去
+        $schema = substr($tmp, 1, -1); //先頭の"(", 最後尾の")"を除去
+        $tmp = strstr($schema, $this->name . ' ' . $this->type); //対象の先頭行までを除去
+        $end = self::rowEnd($tmp); //対象の最後尾を検索
+        $row = substr($tmp, 0, $end); //最後尾以降を除去
         return $row;
     }
 
-    protected function rowEnd($value)
+    static function rowEnd($value)
     {
         $end = mb_strlen($value);
-        if ($end === 1) return false;
-        $array = str_split($value);
+        if ($end === 1) return false; //文字列長が1であれば調べる価値なし
+        $array = str_split($value); //文字列を配列に変換
         $tmp = [];
         foreach ($array as $key => $val) {
-            if (empty($tmp)) {
+            if (empty($tmp)) { //配列が空の時特殊文字待機中でない...","が現れた場所が最後尾
                 if ($val === ",") {
                     $end = $key;
                     break;
@@ -277,11 +290,10 @@ class Column
      */
     static function list($name): array
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $DB = DB::cast(unserialize($_SESSION['db']));
         $columns = [];
         try {
-            $db = new SQLite3($path);
+            $db = $DB->getDB();
             $db->enableExceptions(true);
             $result = $db->query("PRAGMA table_info(" . $name . ")");
             while ($tmp = $result->fetchArray(SQLITE3_ASSOC)) {

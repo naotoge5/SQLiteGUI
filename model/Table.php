@@ -4,24 +4,26 @@ class Table
 {
     private string $name;
     private string $schema;
+    /**
+     * @var Column[]
+     */
     private $columns;
-    private $constraints;
+    private $constraints = [];
 
     function __construct($name)
     {
         $this->name = $name;
         $this->setSchema();
         $this->setColumns();
+        //$this->setConstraints();
     }
 
     private function setSchema()
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $DB = DB::cast(unserialize($_SESSION['db']));
         $schema = '';
         try {
-            $db = new SQLite3($path);
-            $db->enableExceptions(true);
+            $db = $DB->getDB();
             $row = $db->querySingle("SELECT sql FROM sqlite_master WHERE type='table' AND name = '" . $this->name . "'");
             $this->schema = $row;
         } catch (Exception $e) {
@@ -37,6 +39,22 @@ class Table
         $columns = Column::list($this->name);
         foreach ($columns as $tmp) {
             $this->columns[] = new Column($this, $tmp);
+        }
+    }
+
+    function setConstraints()
+    {
+        $last = array_key_last($this->columns);
+        $last_column = $this->columns[$last];
+        $tmp = strstr($this->schema, '('); //CREATE TABLE <テーブル名>までを除去
+        $schema = substr($tmp, 1, -1); //先頭の"(", 最後尾の")"を除去
+        $tmp = strstr($schema, $last_column->getName() . ' ' . $last_column->getType()); //対象の先頭行までを除去
+        $last_column_end = Column::rowEnd($tmp);
+        if (strlen($tmp) === $last_column_end) { //スキーマの最後尾（文字数）と最終カラムの行の最後尾が同じであれば表制約はなし
+            # code...
+        } else {
+            $tmp = substr($tmp, $last_column_end + 1);
+            echo $tmp;
         }
     }
 
@@ -62,36 +80,55 @@ class Table
 
     static function list()
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $DB = DB::cast(unserialize($_SESSION['db']));
         $tables = [];
         try {
-            $db = new SQLite3($path);
-            $db->enableExceptions(true);
+            $db = $DB->getDB();
             $result = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence'");
             while ($tmp = $result->fetchArray(SQLITE3_ASSOC)) {
                 $tables[] = $tmp['name'];
             }
         } catch (Exception $e) {
-            //$flag = Config::errorType($e);
         } finally {
             $db->close();
         }
         return $tables;
     }
 
-    static function drop($name)
+    static function find($name)
     {
-        $db = unserialize($_SESSION['db']);
-        $path = $db->getPath();
+        $DB = DB::cast(unserialize($_SESSION['db']));
+        $flag = 0;
         try {
-            $db = new SQLite3($path);
-            $db->enableExceptions(true);
-            $db->exec("DROP TABLE " . $name);
+            $db = $DB->getDB();
+            $flag = $db->querySingle("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name = '" . $name . "'");
         } catch (Exception $e) {
-            //$flag = Config::errorType($e);
+            echo $e;
         } finally {
             $db->close();
         }
+        return $flag;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param string $name
+     * @return bool
+     */
+    static function drop($name): bool
+    {
+        $DB = DB::cast(unserialize($_SESSION['db']));
+        $res = true;
+        try {
+            $db = $DB->getDB();
+            $db->exec("DROP TABLE " . $name);
+        } catch (Exception $e) {
+            Config::setErrorMessage($e->getMessage());
+            $res = false;
+        } finally {
+            $db->close();
+        }
+        return $res;
     }
 }

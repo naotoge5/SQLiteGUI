@@ -1,26 +1,14 @@
 <?php
 class DB
 {
-    private $path;
-    private $name;
-    private $tables;
+    private string $name;
+    private string $path;
 
-    /**
-     * データベース接続に必要なセット
-     *
-     * @param string $path
-     */
     function __construct(string $path)
     {
         $this->path = $path;
         $array = explode("/", $path);
-        $this->name = substr($array[count($array) - 1], 0, -3);
         $this->name = str_replace('.db', '', $array[count($array) - 1]);
-    }
-
-    function getPath()
-    {
-        return $this->path;
     }
 
     function getName()
@@ -28,17 +16,23 @@ class DB
         return $this->name;
     }
 
-    function getTables()
+    function getDB()
     {
-        return $this->tables;
+        $db = new SQLite3($this->path);
+        $db->enableExceptions(true);
+        return $db;
+    }
+
+    static function cast($obj): self
+    {
+        return $obj;
     }
 
     function version()
     {
         $row = '';
         try {
-            $db = new SQLite3($this->path); //相対パスでええのか
-            $db->enableExceptions(true);
+            $db = $this->getDB();
             $row = $db->querySingle("SELECT sqlite_version()");
         } catch (Exception $e) {
             //$flag = Config::errorType($e);
