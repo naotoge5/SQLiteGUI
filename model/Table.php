@@ -15,7 +15,7 @@ class Table
         $this->name = $name;
         $this->setSchema();
         $this->setColumns();
-        //$this->setConstraints();
+        $this->setConstraints();
     }
 
     private function setSchema()
@@ -36,26 +36,79 @@ class Table
 
     function setColumns()
     {
+        $b = strpos($this->schema, '('); //CREATE TABLE <テーブル名>までを除去
+        $e = strrpos($this->schema, ')');
+        $b += 1;
+        $e -= $b;
+        $schema = substr($this->schema, $b, $e); //先頭の"(", 最後尾の")"を除去
         $columns = Column::list($this->name);
-        foreach ($columns as $tmp) {
-            $this->columns[] = new Column($this, $tmp);
+        foreach ($columns as $i => $tmp) {
+            $row = row\get($schema, $i);
+            $this->columns[] = new Column($this, $tmp, $row);
         }
     }
-
+    /**
+     * Check, Primary key, Foreign key
+     *
+     * @return void
+     */
     function setConstraints()
     {
-        $last = array_key_last($this->columns);
-        $last_column = $this->columns[$last];
-        $tmp = strstr($this->schema, '('); //CREATE TABLE <テーブル名>までを除去
-        $schema = substr($tmp, 1, -1); //先頭の"(", 最後尾の")"を除去
-        $tmp = strstr($schema, $last_column->getName() . ' ' . $last_column->getType()); //対象の先頭行までを除去
-        $last_column_end = Column::rowEnd($tmp);
-        if (strlen($tmp) === $last_column_end) { //スキーマの最後尾（文字数）と最終カラムの行の最後尾が同じであれば表制約はなし
-            # code...
-        } else {
-            $tmp = substr($tmp, $last_column_end + 1);
-            echo $tmp;
+        $b = strpos($this->schema, '('); //CREATE TABLE <テーブル名>までを除去
+        $e = strrpos($this->schema, ')');
+        $b += 1;
+        $e -= $b;
+        $schema = substr($this->schema, $b, $e); //先頭の"(", 最後尾の")"を除去
+        $rows = [];
+        $last_column = end($this->columns);
+        $tmp = strstr($schema, $last_column->getRow()); //対象の先頭行までを除去
+        $tmp = str_replace($last_column->getRow(), '', $tmp);
+        do {
+            $rows[] = row\get($tmp, 0);
+            $tmp = str_replace(end($rows), '', $tmp);
+        } while (!empty($tmp));
+        foreach ($rows as $row) {
+            if (Column::hasPrimaryKey($row)) $this->constraints[] = ["primary_key" => $this->getPrimaryKeyColumns()];
+            if (Column::hasCheck($row)) $this->constraints[] = ["check" => Column::getCheckConditions($row)];
+            if (Column::hasForeignKey($row)) {
+                $tmp = strrpos($row, 'foreign');
+                $row = substr($row, $tmp);
+                $row = strstr($row, '(');
+                $se = row\parenRange($row);
+                $conditions = substr($row, 1, $se["end"] - 1);
+                foreach ($this->columns as $column) {
+                    if (strpos($conditions, $column->getName())!== false) {
+                        // code...
+                    }
+                }
+            };
         }
+        var_dump($this->constraints);
+    }
+
+    /**
+     * primary key
+     *
+     * @return string[]
+     */
+    protected function getPrimaryKeyColumns()
+    {
+        $columns = [];
+        $DB = DB::cast(unserialize($_SESSION['db']));
+        try {
+            $db = $DB->getDB();
+            $rows = $db->query("SELECT name, pk FROM pragma_table_info('" . $this->name . "')");
+            while ($tmp = $rows->fetchArray(SQLITE3_ASSOC)) {
+                if ($tmp['pk']) {
+                    $columns[] = $tmp['name'];
+                }
+            }
+        } catch (Exception $e) {
+            echo $e;
+        } finally {
+            $db->close();
+        }
+        return $columns;
     }
 
     function getName()
