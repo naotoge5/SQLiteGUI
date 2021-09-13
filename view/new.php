@@ -135,17 +135,41 @@
                                                 FOREIGN KEY
                                                 <div class="d-flex">
                                                     <span class="form-checkbox-details text-normal">
-                                                        <select class="form-select select-sm" name="foreign_key-table">
-                                                            <option value="table" selected disabled>Table</option>
-                                                            <?php foreach ($tables as $tmp) : ?>
-                                                                <option value="<?= $tmp ?>"><?= $tmp ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </span>
-                                                    <span class="form-checkbox-details text-normal">
-                                                        <select class="form-select select-sm" name="foreign_key-column">
-                                                            <option selected disabled>Column</option>
-                                                        </select>
+                                                        <div class="d-flex flex-wrap">
+                                                            <div class="flex-1 mx-1">
+                                                                <select class="form-select select-sm" name="foreign_key-table">
+                                                                    <option value="table" selected disabled>Table</option>
+                                                                    <?php foreach ($tables as $tmp) : ?>
+                                                                        <option value="<?= $tmp ?>"><?= $tmp ?></option>
+                                                                    <?php endforeach; ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="flex-1 mx-1">
+                                                                <select class="form-select select-sm" name="foreign_key-column">
+                                                                    <option selected disabled>Column</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="flex-1 mx-1">
+                                                                <select class="form-select select-sm" name="foreign_key-on_delete">
+                                                                    <option selected>ON DELETE</option>
+                                                                    <option value="restrict">RESTRICT</option>
+                                                                    <option value="cascade">CASCADE</option>
+                                                                    <option value="set_null">SET NULL</option>
+                                                                    <option value="set_default">SET DEFAULT</option>
+                                                                    <option value="no_action">NO ACTION</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="flex-1 mx-1">
+                                                                <select class="form-select select-sm" name="foreign_key-on_update">
+                                                                    <option selected>ON UPDATE</option>
+                                                                    <option value="restrict">RESTRICT</option>
+                                                                    <option value="cascade">CASCADE</option>
+                                                                    <option value="set_null">SET NULL</option>
+                                                                    <option value="set_default">SET DEFAULT</option>
+                                                                    <option value="no_action">NO ACTION</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </span>
                                                 </div>
                                             </label>

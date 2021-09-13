@@ -76,10 +76,12 @@ class Table
                 $row = strstr($row, '(');
                 $se = row\parenRange($row);
                 $conditions = substr($row, 1, $se["end"] - 1);
-                foreach ($this->columns as $column) {
-                    if (strpos($conditions, $column->getName())!== false) {
-                        // code...
-                    }
+                $conditions = str_replace(' ', '', $conditions);
+                $columns = explode(',', $conditions);
+                $this->constraints[] = ["foreign_key" => []];
+                $last_key = array_key_last($this->constraints);
+                foreach ($columns as $column) {
+                    $this->constraints[$last_key]["foreign_key"][] = [$column => Column::getForeignKeyConditions($this->name, $column)];
                 }
             };
         }

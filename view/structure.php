@@ -187,6 +187,26 @@ $columns = $table->getColumns();
                                                             <option selected disabled>Column</option>
                                                         </select>
                                                     </span>
+                                                    <span class="form-checkbox-details text-normal">
+                                                        <select class="form-select select-sm" name="foreign_key-on_delete">
+                                                            <option selected disabled>ON DELETE</option>
+                                                            <option value="restrict">RESTRICT</option>
+                                                            <option value="cascade">CASCADE</option>
+                                                            <option value="set_null">SET NULL</option>
+                                                            <option value="set_default">SET DEFAULT</option>
+                                                            <option value="no_action">NO ACTION</option>
+                                                        </select>
+                                                    </span>
+                                                    <span class="form-checkbox-details text-normal">
+                                                        <select class="form-select select-sm" name="foreign_key-on_update">
+                                                            <option selected disabled>ON UPDATE</option>
+                                                            <option value="restrict">RESTRICT</option>
+                                                            <option value="cascade">CASCADE</option>
+                                                            <option value="set_null">SET NULL</option>
+                                                            <option value="set_default">SET DEFAULT</option>
+                                                            <option value="no_action">NO ACTION</option>
+                                                        </select>
+                                                    </span>
                                                 </div>
                                             </label>
                                         </div>

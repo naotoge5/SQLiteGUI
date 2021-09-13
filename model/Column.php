@@ -138,8 +138,8 @@ class Column
     /**
      * foreignkeyの取得
      *
-     * @param [type] $table
-     * @param [type] $column
+     * @param string $table
+     * @param string $column
      * @return false|array
      */
     static function getForeignKeyConditions($table, $column)
@@ -147,8 +147,8 @@ class Column
         $DB = DB::cast(unserialize($_SESSION['db']));
         try {
             $db = $DB->getDB();
-            $row = $db->querySingle("SELECT [table], [to], [on_update], [on_delete], [match] FROM pragma_foreign_key_list('" . $table . "') WHERE [from] = '" . $column . "'", true);
-            return ["table" => $row['table'], "column" => $row['to']];
+            $row = $db->querySingle("SELECT [table], [to], [on_update], [on_delete] FROM pragma_foreign_key_list('" . $table . "') WHERE [from] = '" . $column . "'", true);
+            return ["table" => $row['table'], "column" => $row['to'], "on_delete" => $row['on_delete'], "on_update" => $row['on_update']];
         } catch (Exception $e) {
             echo $e;
         } finally {
